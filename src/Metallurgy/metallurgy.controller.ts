@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Put, Res } from "@nestjs/common";
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
 import { metallurgyService } from "./metallurgy.service";
 import { paramNumber } from "src/Decoretor/parm_number";
@@ -24,5 +24,19 @@ export class metallurgyController{
         
     }
 
+    @Get('all')
+    async getAllMetallury(@Res() res){
+        const metall = await this.metallurgyService.getAllStoque()
+        if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
+        return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.datas})
+
+    }   
+
+    @Get('show/:id')
+    async getMetallury(@paramNumber() id, @Res() res){
+        const metall = await this.metallurgyService.getOneStoque(id)
+        if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
+        return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
+    }
     
 }
