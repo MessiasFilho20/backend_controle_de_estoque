@@ -7,10 +7,10 @@ import { paramNumber } from "src/Decoretor/parm_number";
 export class metallurgyController{
     constructor(private readonly metallurgyService: metallurgyService){}
 
-    @Post('create')
-    async createMetallurgy(@Body() item: metallurgDto, @Res() res){
+    @Post('create/:id')
+    async createMetallurgy(@Body() item: metallurgDto, @Res() res, @paramNumber() id ){
        
-        const metall = await  this.metallurgyService.createStoque(item)
+        const metall = await  this.metallurgyService.createItemStoque(id ,item)
         if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
         return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
     }

@@ -1,4 +1,4 @@
-import {IsString} from "class-validator"
+import {IsNumber, IsString} from "class-validator"
 
 
 export class metallurgDto{
@@ -8,7 +8,7 @@ export class metallurgDto{
     @IsString()
     material: string
 
-    @IsString()
+    @IsNumber()
     amount: number
 
     @IsString()
@@ -19,5 +19,8 @@ export class metallurgDto{
 
     @IsString()
     reference: string
+
+    @IsNumber() 
+    categoryID: number
     
 }

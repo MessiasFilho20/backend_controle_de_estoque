@@ -13,7 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model metalurgy {
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  metalutgys  Metalurgy[]
+}
+
+model Metalurgy {
   id           Int      @id @default(autoincrement())
   situation    String   @db.VarChar(191)
   reference    String   @db.VarChar(191)
@@ -23,4 +29,6 @@ model metalurgy {
   condition    String   @db.VarChar(191)
   created_at   DateTime @default(now()) @db.Timestamp(0)
   updated_at   DateTime @default(now()) @db.Timestamp(0)
+  category Category? @relation(fields: [categoryID], references: [id], onDelete: Cascade)
+  categoryID  Int
 }

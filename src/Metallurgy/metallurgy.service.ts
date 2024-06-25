@@ -1,21 +1,32 @@
-import { BadRequestException, HttpException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
 
 
-export interface metallurgInterface{
+export interface showmetallurgy{
+     message: string, 
+     status: boolean, 
+     datas: any[]
+}
+
+export interface metallurgInterface extends showmetallurgy{
     data : metallurgDto | null, 
-    status: boolean, 
-    message: string, 
-    datas: metallurgDto[] | null
+  
 }
 
 @Injectable()
 export class metallurgyService{
     constructor(private readonly prismaservice: prismaService){}
     
-    async createStoque( items: metallurgDto ): Promise <metallurgInterface> {
+    async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
         try {
+            const category = await this.prismaservice.category.findFirst({
+                where: {id}
+            })
+            if (!category){
+                return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
+            }
+
             const item = await this.prismaservice.metalurgy.create({
                 data:{
                     amount: items.amount, 
@@ -23,11 +34,12 @@ export class metallurgyService{
                     material: items.material, 
                     obs: items.obs, 
                     situation: items.situation, 
-                    reference: items.reference
+                    reference: items.reference, 
+                    categoryID: id
                 }
     
             })
-            return {status: true, datas: null, data: item, message: 'Item adicionado ao estoque'}
+            return {status: true, datas: null, data: item, message: 'Item adicionado a categoria'}
 
         }catch(error){
             return {status: false, datas: null, data: null, message: `error ao adicionar Item ao estoque ${error}`}
@@ -36,16 +48,31 @@ export class metallurgyService{
     }
 
     async updateStoque( id: number, items: metallurgDto ): Promise <metallurgInterface> {
-        try {
+    try {
+        const category = await this.prismaservice.category.findFirst({
+            where: {id: items.categoryID}
+        })
+        if (!category){
+            return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
+        }
+        const ite = await this.prismaservice.metalurgy.findFirst({
+            where:{id}
+        })
+        if (!ite){
+            return {status: false, datas: null, data: null, message: 'item Não encontrado'}
+        }
+
+      
             const item = await this.prismaservice.metalurgy.update({
-                where: {id},
+                where: {id: id},
                 data:{
                     amount: items.amount, 
                     condition: items.condition, 
                     material: items.material, 
                     obs: items.obs, 
                     situation: items.situation, 
-                    reference: items.reference
+                    reference: items.reference, 
+                    categoryID: items.categoryID
                 }
     
             })
@@ -55,16 +82,13 @@ export class metallurgyService{
         }
     }
 
-    async getAllStoque( ):Promise <metallurgInterface>{
+    async getAllStoque():Promise <showmetallurgy>{
         try {
-            const items = this.prismaservice.metalurgy.findMany()
-            const filterItems: metallurgDto[] = (await items).map(item =>{
-                const { created_at, updated_at, ...rest } = item;
-                return rest as metallurgDto
-            })
-            return {status: true, data: null, datas: filterItems, message: 'todos os item do estoque'}
+            const items = await this.prismaservice.metalurgy.findMany()
+            
+            return {status: true, datas: items, message: 'todos os item do estoque'}
         } catch (error) {
-            return {status: false, data: null, datas: null, message: `error ao buscar todo os items do estoque${error}`}
+            return {status: false, datas: null, message: `error ao buscar todo os items do estoque${error}`}
            
         }
        
@@ -72,6 +96,14 @@ export class metallurgyService{
 
     async getOneStoque( id: number): Promise <metallurgInterface> {
         try {
+
+            const ite = await this.prismaservice.metalurgy.findFirst({
+                where:{id}
+            })
+            if (!ite){
+                return {status: false, datas: null, data: null, message: 'item Não encontrado'}
+            }
+
             const item = await this.prismaservice.metalurgy.findFirst({
                 where: {id}
             })
