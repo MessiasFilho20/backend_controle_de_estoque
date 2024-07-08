@@ -63,7 +63,7 @@ export class categoryService {
                 where: {id}
             })
             if (!categorys) {return{status: false, data: null, datas: null, message: 'categoria não encontrada '}}
-            console.log(categorys);
+            
             
             return{status: true, data: categorys, datas: null, message: 'sucesso'}    
         } catch (error) {

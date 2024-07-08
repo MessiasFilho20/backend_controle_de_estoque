@@ -10,6 +10,8 @@ export class categoryController{
 
     @Post('create')
     async createCategory(@Body() category: categoryDto, @Res() res){
+       console.log(category);
+       
         const cat = await this.categoryService.createCategory(category)
     
         if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({error: cat.message})}
@@ -31,7 +33,7 @@ export class categoryController{
     async showAllcategorys(@Res() res){
         const cat = await this.categoryService.ShowAllCategorys()
         if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({error: cat.message})}
-        return res.status(HttpStatus.OK).json({message: cat.message, datas: cat.datas})    
+        return res.status(HttpStatus.OK).json(cat.datas)    
     }
 
     @Get('show/:id')
