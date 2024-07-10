@@ -16,17 +16,18 @@ datasource db {
 model Category {
   id Int @id @default(autoincrement())
   name String
+  description String
   metalutgys  Metalurgy[]
 }
 
 model Metalurgy {
-  id           Int      @id @default(autoincrement())
-  situation    String   @db.VarChar(191)
-  reference    String   @db.VarChar(191)
-  material     String   @db.VarChar(191)
-  amount       Int   
-  obs          String   @db.VarChar(191)
-  condition    String   @db.VarChar(191)
+  id              Int      @id @default(autoincrement())
+  quantidade      Int   
+  quanti_emerg    Int
+  unidade         Int
+  img             String   @db.VarChar(191)
+  fornecedor      String   @db.VarChar(191)
+  descricao       String   
   created_at   DateTime @default(now()) @db.Timestamp(0)
   updated_at   DateTime @default(now()) @db.Timestamp(0)
   category Category? @relation(fields: [categoryID], references: [id], onDelete: Cascade)

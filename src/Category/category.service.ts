@@ -18,18 +18,23 @@ export class categoryService {
     async createCategory(category:categoryDto): Promise <categoryInterface>{
         try {
             const cate = await this.prismaService.category.create({
-                data: {name: category.name}
+                data: {
+                    name: category.name,
+                    description: category.description
+                }
             })      
             return {status: true, data: cate, datas: null,  message: 'categoria creiada com sucesso'}
         } catch (error) {
-            return {status: false, data: null, datas: null, message: `error a criar categoria ${error}`}
+            return {status: false, data: null, datas: null, message: `error ao criar categoria ${error}`}
         }    
     }
     async UpdateCategory(id: number, category: categoryDto): Promise<categoryInterface> {
         try {
             const cate = await this.prismaService.category.update({
                 where: {id}, 
-                data:{name: category.name}
+                data:{name: category.name, 
+                     description: category.description
+                }
             })
             return {status: true, data: cate, datas: null, message: 'categoria atualizada com sucesso'}
 

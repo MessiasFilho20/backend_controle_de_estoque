@@ -29,17 +29,17 @@ export class metallurgyService{
 
             const item = await this.prismaservice.metalurgy.create({
                 data:{
-                    amount: items.amount, 
-                    condition: items.condition, 
-                    material: items.material, 
-                    obs: items.obs, 
-                    situation: items.situation, 
-                    reference: items.reference, 
+                    quanti_emerg: items.quanti_emerg, 
+                    unidade: items.unidade, 
+                    quantidade: items.quantidade, 
+                    descricao: items.descricao, 
+                    fornecedor: items.fornecedor, 
+                    img: items.img, 
                     categoryID: id
                 }
     
             })
-            return {status: true, datas: null, data: item, message: 'Item adicionado a categoria'}
+            return {status: true, datas: null, data: item,  message: 'Item adicionado a categoria'}
 
         }catch(error){
             return {status: false, datas: null, data: null, message: `error ao adicionar Item ao estoque ${error}`}
@@ -50,7 +50,7 @@ export class metallurgyService{
     async updateStoque( id: number, items: metallurgDto ): Promise <metallurgInterface> {
     try {
         const category = await this.prismaservice.category.findFirst({
-            where: {id: items.categoryID}
+            where: {id: id}
         })
         if (!category){
             return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
@@ -66,13 +66,13 @@ export class metallurgyService{
             const item = await this.prismaservice.metalurgy.update({
                 where: {id: id},
                 data:{
-                    amount: items.amount, 
-                    condition: items.condition, 
-                    material: items.material, 
-                    obs: items.obs, 
-                    situation: items.situation, 
-                    reference: items.reference, 
-                    categoryID: items.categoryID
+                    quanti_emerg: items.quanti_emerg, 
+                    unidade: items.unidade, 
+                    quantidade: items.quantidade, 
+                    descricao: items.descricao, 
+                    fornecedor: items.fornecedor, 
+                    img: items.img, 
+                    categoryID: id
                 }
     
             })

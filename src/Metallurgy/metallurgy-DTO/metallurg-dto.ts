@@ -3,24 +3,23 @@ import {IsNumber, IsString} from "class-validator"
 
 export class metallurgDto{
     @IsString()
-    situation: string
+    quantidade: number
 
     @IsString()
-    material: string
+    quanti_emerg: number
 
     @IsNumber()
-    amount: number
+    unidade: number
 
     @IsString()
-    condition: string
+    img: string
 
     @IsString()
-    obs: string
-
-    @IsString()
-    reference: string
+    fornecedor: string
 
     @IsNumber() 
-    categoryID: number
+    descricao: string
+
     
 }
+ 
