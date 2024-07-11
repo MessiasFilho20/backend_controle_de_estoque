@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Res } from "@nestjs/common";
 import { categoryDto } from "./category-DTO/categry-DTO";
 import { categoryService } from "./category.service";
 import { paramNumber } from "src/Decoretor/parm_number";
@@ -41,5 +41,12 @@ export class categoryController{
         const cat = await this.categoryService.ShowCategory(id)
         if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({error: cat.message})}
         return res.status(HttpStatus.OK).json({message: cat.message, data: cat.data})    
+    }
+
+    @Delete('delete/:id')
+    async deleteCategory(@Res() res, @paramNumber() id ){
+          const {status, message, data}= await this.categoryService.DeleteCategory(id)
+          if (!status) {return res.status(HttpStatus.BAD_REQUEST).json(message)}
+          return res.status(HttpStatus.OK).json(data)   
     }
 }

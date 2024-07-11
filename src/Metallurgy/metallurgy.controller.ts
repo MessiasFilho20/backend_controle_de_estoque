@@ -34,7 +34,7 @@ export class metallurgyController{
 
     @Get('list/:id')
     async getAllMetalluryID(@paramNumber() id , @Res() res){
-        const { status, datas, message }= await this.metallurgyService.getAllById(id)
+        const { status, datas, message } = await this.metallurgyService.getAllById(id)
         if (!status) return res.status(HttpStatus.BAD_REQUEST).json(message)
         return res.status(HttpStatus.OK).json(datas)
 

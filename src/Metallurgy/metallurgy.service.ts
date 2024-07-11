@@ -20,8 +20,7 @@ export class metallurgyService{
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
         try {
-           console.log(id , items );
-           
+        
             const item = await this.prismaservice.metalurgy.create({
                 data:{
                     quanti_emerg: Number(items.quanti_emerg), 
@@ -112,14 +111,14 @@ export class metallurgyService{
         try {
 
             const ite = await this.prismaservice.metalurgy.findFirst({
-                where:{id}
+                where:{categoryID: id}
             })
             if (!ite){
                 return {status: false, datas: null, message: 'item Não encontrado'}
             }
 
             const item = await this.prismaservice.metalurgy.findMany({
-                where: {id}
+                where: {categoryID: id}
             })
             return {status: true, datas: item, message: 'ok'}
         } catch (error) {
