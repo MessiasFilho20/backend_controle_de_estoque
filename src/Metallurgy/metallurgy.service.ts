@@ -20,24 +20,18 @@ export class metallurgyService{
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
         try {
-            const category = await this.prismaservice.category.findFirst({
-                where: {id}
-            })
-            if (!category){
-                return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
-            }
-
+           console.log(id , items );
+           
             const item = await this.prismaservice.metalurgy.create({
                 data:{
-                    quanti_emerg: items.quanti_emerg, 
-                    unidade: items.unidade, 
-                    quantidade: items.quantidade, 
+                    quanti_emerg: Number(items.quanti_emerg), 
+                    unidade: Number(items.unidade), 
+                    quantidade: Number(items.quantidade), 
                     descricao: items.descricao, 
                     fornecedor: items.fornecedor, 
                     img: items.img, 
                     categoryID: id
                 }
-    
             })
             return {status: true, datas: null, data: item,  message: 'Item adicionado a categoria'}
 
@@ -110,6 +104,26 @@ export class metallurgyService{
             return {status: true, datas: null, data: item, message: 'ok'}
         } catch (error) {
             return {status: false, datas: null, data: null, message: `error ${error}`}
+            
+        }
+    }
+
+    async getAllById (id : number):Promise <showmetallurgy>{
+        try {
+
+            const ite = await this.prismaservice.metalurgy.findFirst({
+                where:{id}
+            })
+            if (!ite){
+                return {status: false, datas: null, message: 'item Não encontrado'}
+            }
+
+            const item = await this.prismaservice.metalurgy.findMany({
+                where: {id}
+            })
+            return {status: true, datas: item, message: 'ok'}
+        } catch (error) {
+            return {status: false, datas: null, message: `error ${error}`}
             
         }
     }

@@ -21,6 +21,8 @@ export class categoryService {
                 data: {
                     name: category.name,
                     description: category.description
+
+                    
                 }
             })      
             return {status: true, data: cate, datas: null,  message: 'categoria creiada com sucesso'}

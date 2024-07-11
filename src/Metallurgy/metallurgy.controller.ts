@@ -9,7 +9,7 @@ export class metallurgyController{
 
     @Post('create/:id')
     async createMetallurgy(@Body() item: metallurgDto, @Res() res, @paramNumber() id ){
-       
+     
         const metall = await  this.metallurgyService.createItemStoque(id ,item)
         if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
         return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
@@ -31,6 +31,14 @@ export class metallurgyController{
         return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.datas})
 
     }   
+
+    @Get('list/:id')
+    async getAllMetalluryID(@paramNumber() id , @Res() res){
+        const { status, datas, message }= await this.metallurgyService.getAllById(id)
+        if (!status) return res.status(HttpStatus.BAD_REQUEST).json(message)
+        return res.status(HttpStatus.OK).json(datas)
+
+    } 
 
     @Get('show/:id')
     async getMetallury(@paramNumber() id, @Res() res){
