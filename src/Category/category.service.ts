@@ -17,6 +17,10 @@ export class categoryService {
 
     async createCategory(category:categoryDto): Promise <categoryInterface>{
         try {
+            if (category.name == '' || category.description == ''){
+                return {status: false , data: null, datas: null , message: 'Campos vazios'}
+            }
+
             const cate = await this.prismaService.category.create({
                 data: {
                     name: category.name,

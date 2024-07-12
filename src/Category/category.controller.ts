@@ -38,10 +38,11 @@ export class categoryController{
 
     @Get('show/:id')
     async showcategory(@Res() res, @paramNumber() id ){
-        const cat = await this.categoryService.ShowCategory(id)
-        if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({error: cat.message})}
-        return res.status(HttpStatus.OK).json({message: cat.message, data: cat.data})    
+        const {status, data , message}= await this.categoryService.ShowCategory(id)
+        if (!status) {return res.status(HttpStatus.BAD_REQUEST).json(message)}
+        return res.status(HttpStatus.OK).json(data)    
     }
+
 
     @Delete('delete/:id')
     async deleteCategory(@Res() res, @paramNumber() id ){
