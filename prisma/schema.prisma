@@ -13,6 +13,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User { 
+  id Int @id @default(autoincrement())
+  nome String @db.VarChar(191)
+  cpf String  @unique
+  role String 
+  gmail String @unique 
+  password String
+}
+
 model Category {
   id Int @id @default(autoincrement())
   name String
@@ -22,6 +31,7 @@ model Category {
 
 model Metalurgy {
   id              Int      @id @default(autoincrement())
+  categoryID  Int
   quantidade      Int   
   quanti_emerg    Int
   unidade         Int
@@ -30,6 +40,5 @@ model Metalurgy {
   descricao       String   
   created_at   DateTime @default(now()) @db.Timestamp(0)
   updated_at   DateTime @default(now()) @db.Timestamp(0)
-  category Category? @relation(fields: [categoryID], references: [id], onDelete: Cascade)
-  categoryID  Int
+  category Category @relation(fields: [categoryID], references: [id], onDelete: Cascade)
 }
