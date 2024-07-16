@@ -1,4 +1,4 @@
-import { IsString } from "class-validator"
+import { IsEmail, IsString } from "class-validator"
 
 export class userDto{
     @IsString()
@@ -7,7 +7,7 @@ export class userDto{
     @IsString()
     cpf: string
 
-    @IsString()
+    @IsEmail()
     gmail: string 
     
     @IsString()

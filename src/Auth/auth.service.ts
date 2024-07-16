@@ -11,20 +11,22 @@ export class authService {
              acessToken: this.jwtservice.sign({
                 id: user.id, 
                 name: user.nome, 
-                email: user.gmail
+                email: user.gmail,
              },{
 
                 expiresIn: '7 days', 
                 subject: String(user.id), 
-                audience: 'users'
+                audience: 'users', 
+                issuer: 'login',
              })
         }}
 
     checkToken(token: string){
         try {
+            
             const data = this.jwtservice.verify( token,{
-                audience: 'user', 
-                issuer: 'login'
+                audience: 'users', 
+                issuer: 'login',
             })
             return data 
         }catch(e){

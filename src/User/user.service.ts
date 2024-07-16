@@ -27,7 +27,8 @@ export class userService {
         if (user.password  != user.passwordconfirm){
             return {status: false, data: null, datas: null, message: 'senhas diferentes', token: ''}
         }
- 
+      
+        
         try{
 
             const cpf = await this.prismaservice.user.findFirst({
