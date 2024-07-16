@@ -15,12 +15,12 @@ export class userController {
             return res.status(HttpStatus.OK).json(token)
         }
     
-        @Post('create')
-        async createUser(@Body()user: userDto, @Res() res  ){
-            const {message,status,token} = await this.userService.createUser(user)
-            if (!status){return res.status(HttpStatus.BAD_REQUEST).json(message)}
-                return res.status(HttpStatus.OK).json(token)
-            }
+    @Post('create')
+    async createUser(@Body()user: userDto, @Res() res  ){
+        const {message,status,token} = await this.userService.createUser(user)
+        if (!status){return res.status(HttpStatus.BAD_REQUEST).json(message)}
+            return res.status(HttpStatus.OK).json(token)
+        }
     
 
     }

@@ -5,7 +5,6 @@ import { loginDTO } from "./userDTO/auth-login-DTO";
 import { authService } from "src/Auth/auth.service";
 import * as bcrypt from 'bcrypt';
 
-
 export interface userInterface {
     data: {} | null, 
     message: string, 
@@ -28,8 +27,22 @@ export class userService {
         if (user.password  != user.passwordconfirm){
             return {status: false, data: null, datas: null, message: 'senhas diferentes', token: ''}
         }
-        user.password = await bcrypt.hash(user.password, salt)
+ 
         try{
+
+            const cpf = await this.prismaservice.user.findFirst({
+                where: {cpf: user.cpf}
+            })
+
+            const email = await this.prismaservice.user.findFirst({
+                where: {gmail: user.cpf}
+            })
+
+            if (cpf) return {status: false, data: null,datas: null,message: 'CPF já cadastrado', token:''}
+            if (email) return {status: false, data: null,datas: null,message: 'Email já cadastrado', token:''}
+
+
+            user.password = await bcrypt.hash(user.password, salt)
              const usercreate = await this.prismaservice.user.create({
                 data: {
                     cpf: user.cpf, 
@@ -39,18 +52,21 @@ export class userService {
                     role: ''
                 }
              })
+
              const {acessToken} = this.authservice.createToken(usercreate)
              return {status: true, data: null, datas: null, message: `usuario criado com sucesso`, token: acessToken}
         }catch(e){
             return{data: null, status: false, datas: null, message:`error ao criar usuario ${e}`, token: ''}
         } 
+    
     }
 
     async loginUser(user: loginDTO):Promise<usertoken>{
         try{
             const userlogin = await this.prismaservice.user.findFirst({
-                where: {gmail: user.email}
+                where: {gmail: user.data, cpf: user.data}
             })
+
             if (!userlogin){
                 return {status: false, data: null , datas: null ,message: `Usuario Não encontrado`, token: ''}
             }
@@ -59,7 +75,7 @@ export class userService {
                 return{status: false, data: null, datas: null , message: 'email ou senha incorreta', token: ''}
              }
            
-            const {acessToken} = this.authservice.createToken(userlogin)
+            const {acessToken} = this.authservice.createToken(userlogin )
 
             return {status: true, data: null, datas: null, message: `Logado com sucesso`, token: acessToken}
 

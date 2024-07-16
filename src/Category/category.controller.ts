@@ -51,14 +51,6 @@ export class categoryController{
           return res.status(HttpStatus.OK).json(data)   
     }
 
-    @Delete('delete/:id')
-    async deleteCategory(@Res() res, @paramNumber() id ){
-        const {status, data, message} = await this.categoryService.DeleteCategory(id)
     
-        if (!status) {return res.status(HttpStatus.BAD_REQUEST).json(message)}
-        
-        return res.status(HttpStatus.OK).json(data)    
-    
-    }
 
 }
