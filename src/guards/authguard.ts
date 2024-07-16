@@ -13,8 +13,10 @@ export class authGuard implements CanActivate{
     async canActivate(context: ExecutionContext) {
         const request = context.switchToHttp().getRequest()
         const {authorization} = request.headers
+        
         try {
             const data = this.authserv.checkToken(authorization ?? ''.split(' ')[1])
+            console.log(data);
             request.tokenPayload = data
             request.user = await this.userserv.getUserById(data.id)
             return true

@@ -14,7 +14,7 @@ export class authService {
                 email: user.gmail
              },{
 
-                expiresIn: '1 days', 
+                expiresIn: '7 days', 
                 subject: String(user.id), 
                 audience: 'users'
              })

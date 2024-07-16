@@ -41,7 +41,6 @@ export class userService {
             if (cpf) return {status: false, data: null,datas: null,message: 'CPF já cadastrado', token:''}
             if (email) return {status: false, data: null,datas: null,message: 'Email já cadastrado', token:''}
 
-
             user.password = await bcrypt.hash(user.password, salt)
              const usercreate = await this.prismaservice.user.create({
                 data: {
@@ -63,19 +62,28 @@ export class userService {
 
     async loginUser(user: loginDTO):Promise<usertoken>{
         try{
-            const userlogin = await this.prismaservice.user.findFirst({
-                where: {gmail: user.data, cpf: user.data}
-            })
-
-            if (!userlogin){
-                return {status: false, data: null , datas: null ,message: `Usuario Não encontrado`, token: ''}
+            const isEmail = user.data.includes('@')
+            let userLogin 
+        
+            if (isEmail){
+                userLogin = await this.prismaservice.user.findFirst({
+                    where: {gmail: user.data}
+                })
+            }else{
+                userLogin = await this.prismaservice.user.findFirst({
+                    where: {cpf: user.data}
+                })
             }
 
-             if (!await bcrypt.compare(user.password, userlogin.password)){
-                return{status: false, data: null, datas: null , message: 'email ou senha incorreta', token: ''}
+            if (!userLogin) {
+                return { status: false, data: null, datas: null, message: `Usuário Não encontrado`, token: '' };
+            }
+
+             if (!await bcrypt.compare(user.password, userLogin.password)){
+                return{status: false, data: null, datas: null , message: 'senha incorreta', token: ''}
              }
            
-            const {acessToken} = this.authservice.createToken(userlogin )
+            const {acessToken} = this.authservice.createToken(userLogin )
 
             return {status: true, data: null, datas: null, message: `Logado com sucesso`, token: acessToken}
 

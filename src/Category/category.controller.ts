@@ -1,13 +1,15 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { categoryDto } from "./category-DTO/categry-DTO";
 import { categoryService } from "./category.service";
 import { paramNumber } from "src/Decoretor/parm_number";
+import { authGuard } from "src/guards/authguard";
 
 @Controller('category')
 export class categoryController{
     
     constructor(private readonly categoryService: categoryService){}
 
+    @UseGuards(authGuard)
     @Post('create')
     async createCategory(@Body() category: categoryDto, @Res() res){
        console.log(category);
@@ -42,7 +44,6 @@ export class categoryController{
         if (!status) {return res.status(HttpStatus.BAD_REQUEST).json(message)}
         return res.status(HttpStatus.OK).json(data)    
     }
-
 
     @Delete('delete/:id')
     async deleteCategory(@Res() res, @paramNumber() id ){
