@@ -7,6 +7,7 @@ import { prismaModule } from './prisma/prisma.module';
 import { userModule } from './User/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { authModule } from './Auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [

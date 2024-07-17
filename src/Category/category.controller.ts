@@ -2,14 +2,18 @@ import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Request, Res
 import { categoryDto } from "./category-DTO/categry-DTO";
 import { categoryService } from "./category.service";
 import { paramNumber } from "src/Decoretor/parm_number";
-import { authGuard } from "src/guards/authguard";
+import { authGuard } from "src/guards/auth.guard";
+import { rouleGuard } from "src/guards/roule.guard";
+import { role } from "src/enums/role.enum";
+import {Roles} from "src/Decoretor/role.decorator";
 
-@UseGuards(authGuard)
 @Controller('category')
 export class categoryController{
     
     constructor(private readonly categoryService: categoryService){}
 
+    @UseGuards(authGuard, rouleGuard)
+    @Roles(role.admin)
     @Post('create')
     async createCategory(@Body() category: categoryDto, @Response() res, ){
         const cat = await this.categoryService.createCategory(category)

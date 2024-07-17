@@ -57,8 +57,7 @@ export class userService {
              return {status: true, data: null, datas: null, message: `usuario criado com sucesso`, token: acessToken}
         }catch(e){
             return{data: null, status: false, datas: null, message:`error ao criar usuario ${e}`, token: ''}
-        } 
-    
+        }
     }
 
     async loginUser(user: loginDTO):Promise<usertoken>{
@@ -93,14 +92,17 @@ export class userService {
         }
     }
 
-    async getUserById(id: number){
+    async getUserById(id: number):Promise <userInterface>{
         try {
             const user = await this.prismaservice.user.findFirst({
                 where: {id}
             })
-            return user
+            if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
+
+            return {status: true, data: user, datas:null, message: ''}
         } catch (error) {
-            throw new BadRequestException(`user not found ${error}`)
+            return {status: false , data : null , datas: null,message: `error ${error}`}
         }
     }
+    
 }
