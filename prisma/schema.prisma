@@ -22,6 +22,21 @@ model User {
   password String
 }
 
+model Oreder {
+  id Int @id @default(autoincrement())
+  userName String 
+  userCpf String
+  itemID Int
+  item_descricao String
+  item_fornecedor String
+  category_description String
+  category_name String
+  unidade Int
+  quantidade Int
+  created_at   DateTime @default(now()) @db.Timestamp(0)
+  updated_at   DateTime @default(now()) @db.Timestamp(0)
+}
+
 model Category {
   id Int @id @default(autoincrement())
   name String

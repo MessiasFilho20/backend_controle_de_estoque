@@ -8,9 +8,9 @@ import { userModule } from "src/User/user.module";
 @Module({
     controllers:[categoryController], 
     exports:[categoryService], 
-    imports:[prismaModule, 
-         forwardRef(() =>(authModule)),
-         forwardRef(() =>(userModule))
+    imports:[forwardRef(() =>(prismaModule)), 
+             forwardRef(() =>(authModule)),
+             forwardRef(() =>(userModule))
         ],
     providers:[categoryService],
 })

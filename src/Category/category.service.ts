@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { categoryDto } from "./category-DTO/categry-DTO";
-import { promises } from "dns";
+
 
 export interface categoryInterface{
     status: boolean, 
@@ -69,6 +69,7 @@ export class categoryService {
         }
     }
     async ShowCategory(id: number): Promise<categoryInterface>{
+        
         try {
             const categorys = await this.prismaService.category.findFirst({
                 where: {id}

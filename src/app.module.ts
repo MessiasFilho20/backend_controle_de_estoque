@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { metallurgyModule } from './Metallurgy/metallugy.module';
@@ -7,16 +7,18 @@ import { prismaModule } from './prisma/prisma.module';
 import { userModule } from './User/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { authModule } from './Auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+
+import { orderModule } from './Order/oreder.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     metallurgyModule,
      categoryModule,
-     prismaModule,
+      forwardRef(()=>prismaModule),
       userModule,
-      authModule
+      authModule, 
+      orderModule
     ],
   controllers: [AppController],
   providers: [AppService],

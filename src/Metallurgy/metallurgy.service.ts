@@ -16,6 +16,7 @@ export interface metallurgInterface extends showmetallurgy{
 
 @Injectable()
 export class metallurgyService{
+    
     constructor(private readonly prismaservice: prismaService){}
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
