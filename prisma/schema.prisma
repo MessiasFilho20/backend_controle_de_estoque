@@ -49,7 +49,6 @@ model Metalurgy {
   categoryID  Int
   quantidade      Int   
   quanti_emerg    Int
-  unidade         Int
   img             String   @db.VarChar(191)
   fornecedor      String   @db.VarChar(191)
   descricao       String   

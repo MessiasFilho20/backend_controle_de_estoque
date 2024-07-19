@@ -8,8 +8,6 @@ export class metallurgDto{
     @IsString()
     quanti_emerg: number
 
-    @IsNumber()
-    unidade: number
 
     @IsString()
     img: string

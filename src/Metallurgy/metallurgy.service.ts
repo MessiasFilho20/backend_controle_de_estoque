@@ -25,7 +25,7 @@ export class metallurgyService{
             const item = await this.prismaservice.metalurgy.create({
                 data:{
                     quanti_emerg: Number(items.quanti_emerg), 
-                    unidade: Number(items.unidade), 
+                    
                     quantidade: Number(items.quantidade), 
                     descricao: items.descricao, 
                     fornecedor: items.fornecedor, 
@@ -61,7 +61,6 @@ export class metallurgyService{
                 where: {id: id},
                 data:{
                     quanti_emerg: items.quanti_emerg, 
-                    unidade: items.unidade, 
                     quantidade: items.quantidade, 
                     descricao: items.descricao, 
                     fornecedor: items.fornecedor, 
