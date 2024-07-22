@@ -10,7 +10,7 @@ import { orderAdminDTO } from "./oreder-DTO/orderadmin-dto";
 export interface orderInterface {
     status: boolean,
     data: any | null,
-    datas: any[]
+    datas: any[] | null
     messege: string
 }
 
@@ -33,6 +33,8 @@ export class orederService {
             const { quantidade } = metallugy.data
 
             let rest = quantidade - order.unidade
+
+            if (rest < 0 ) return {status: false, data: null , datas: null, messege: 'error resultado menor que zero'}
 
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
@@ -113,7 +115,7 @@ export class orederService {
     async getAllOrders(): Promise<orderInterface> {
         try {
             const orders = await this.prisma.oreder.findMany()
-            return { status: true, data: null, datas: orders, messege: "ordem encontrada" }
+            return { status: true, data: null, datas: orders, messege: "ordems encontradas" }
         } catch (error) {
             return { status: false, data: null, datas: null, messege: `error ordem não encontrada ${error}` }
         }

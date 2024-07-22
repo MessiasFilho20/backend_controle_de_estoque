@@ -9,7 +9,7 @@ export interface userInterface {
     data: {} | null, 
     message: string, 
     status: boolean, 
-    datas : [] | null
+    datas : any[] | null
 }
 export interface usertoken extends userInterface{
     token: string
@@ -100,6 +100,17 @@ export class userService {
             if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
 
             return {status: true, data: user, datas:null, message: ''}
+        } catch (error) {
+            return {status: false , data : null , datas: null,message: `error ${error}`}
+        }
+    }
+
+    async getAllUsers():Promise<userInterface>{
+        try {
+            const users = await this.prismaservice.user.findMany()
+            // if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
+
+            return {status: true, data: null, datas:users, message: ''}
         } catch (error) {
             return {status: false , data : null , datas: null,message: `error ${error}`}
         }

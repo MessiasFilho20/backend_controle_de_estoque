@@ -3,6 +3,7 @@ import { userService } from "./user.service";
 import { userDto } from "./userDTO/user-DTO";
 import { loginDTO } from "./userDTO/auth-login-DTO";
 import { authGuard } from "src/guards/auth.guard";
+import { paramNumber } from "src/Decoretor/parm_number";
 
 @Controller('user')
 export class userController {
@@ -29,4 +30,19 @@ export class userController {
         
         return {data}
     }
+
+    @Get('get/:id')
+    async getUserById(@paramNumber() id: number){
+        const {data} = await this.userService.getUserById(id)
+        
+        return {data}
+    }
+
+    @Get('all')
+    async getAllUsers(){
+        const {datas} = await this.userService.getAllUsers()
+        
+        return {datas}
+    }
+
     }
