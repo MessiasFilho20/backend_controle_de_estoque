@@ -32,6 +32,7 @@ model Oreder {
   category_description String
   category_name String
   unidade Int
+  role String
   quantidade Int
   created_at   DateTime @default(now()) @db.Timestamp(0)
   updated_at   DateTime @default(now()) @db.Timestamp(0)

@@ -5,52 +5,117 @@ import { prismaService } from "src/prisma/prisma.service";
 
 import { orderDto } from "./oreder-DTO/order-dto";
 import { userDto } from "src/User/userDTO/user-DTO";
+import { orderAdminDTO } from "./oreder-DTO/orderadmin-dto";
+
+export interface orderInterface {
+    status: boolean,
+    data: any | null,
+    datas: any[]
+    messege: string
+}
 
 Injectable()
 export class orederService {
     constructor(
-               
-                @Inject(forwardRef(() => prismaService))
-                private readonly prisma: prismaService,
-                private readonly metallurgy: metallurgyService, 
-                private readonly category: categoryService    
-    ){ }
 
-    async createOreder(user: userDto, order: orderDto){
-        try {  
-           
+        @Inject(forwardRef(() => prismaService))
+        private readonly prisma: prismaService,
+        private readonly metallurgy: metallurgyService,
+        private readonly category: categoryService
+    ) { }
+
+    async createOreder(user: userDto, order: orderDto): Promise<orderInterface> {
+        try {
+
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
-         
-          const {quantidade} = metallugy.data
-        
-          let rest = quantidade - order.unidade
 
-         await this.prisma.metalurgy.update({
-            where: {id: order.itemID},
-            data: {quantidade: rest}
-         })
-         
-        const ordercreated =  await this.prisma.oreder.create({
-            data:{
-                category_description: category.data.description,
-                category_name: category.data.name, 
-                item_descricao: metallugy.data.descricao,
-                item_fornecedor: metallugy.data.fornecedor,
-                itemID: order.itemID,
-                unidade: order.unidade, 
-                userName: user.nome, 
-                quantidade: rest,
-                userCpf: user.cpf 
-            }
-         })
+            const { quantidade } = metallugy.data
 
-         return ordercreated
+            let rest = quantidade - order.unidade
+
+            await this.prisma.metalurgy.update({
+                where: { id: order.itemID },
+                data: { quantidade: rest }
+            })
+            await this.prisma.oreder.create({
+                data: {
+                    category_description: category.data.description,
+                    category_name: category.data.name,
+                    item_descricao: metallugy.data.descricao,
+                    item_fornecedor: metallugy.data.fornecedor,
+                    itemID: order.itemID,
+                    unidade: order.unidade,
+                    userName: user.nome,
+                    quantidade: rest,
+                    userCpf: user.cpf,
+                    role: 'user'
+                }
+            })
+
+            return { status: true, data: null, datas: null, messege: 'retirada feira com sucesso' }
         } catch (error) {
-            console.log(error);
-            
+            return { status: false, data: null, datas: null, messege: `error ao fazer retirada ${error}` }
         }
+    }
+
+    async createOrderByAdmin(user, order: orderAdminDTO): Promise<orderInterface> {
+        try {
+            const metallugy = await this.metallurgy.getOneStoque(order.itemID)
+            const category = await this.category.ShowCategory(order.categoryID)
+
+            const { quantidade } = metallugy.data
+
+            let rest = quantidade - order.unidade
+
+            await this.prisma.metalurgy.update({
+                where: { id: order.itemID },
+                data: { quantidade: rest }
+            })
+
+            const ordercreated = await this.prisma.oreder.create({
+                data: {
+                    category_description: category.data.description,
+                    category_name: category.data.name,
+                    item_descricao: metallugy.data.descricao,
+                    item_fornecedor: metallugy.data.fornecedor,
+                    itemID: order.itemID,
+                    unidade: order.unidade,
+                    userName: order.userName,
+                    quantidade: rest,
+                    userCpf: order.userCPF,
+                    role: user.role
+                }
+            })
+
+            return { status: true, data: null, datas: null, messege: 'retirada feira com sucesso' }
+        } catch (error) {
+            return { status: false, data: null, datas: null, messege: `error ao fazer retirada ${error}` }
+        }
+    }
+
+
+    async updadateOrder() {
 
     }
 
+    async getOrderByID(id: number): Promise<orderInterface> {
+        try {
+            const order = await this.prisma.oreder.findFirst({
+                where: { id }
+            })
+            return { status: true, data: order, datas: null, messege: "ordem encontrada" }
+        } catch (error) {
+            return { status: false, data: null, datas: null, messege: `error ordem não encontrada ${error}` }
+        }
+    }
+
+    async getAllOrders(): Promise<orderInterface> {
+        try {
+            const orders = await this.prisma.oreder.findMany()
+            return { status: true, data: null, datas: orders, messege: "ordem encontrada" }
+        } catch (error) {
+            return { status: false, data: null, datas: null, messege: `error ordem não encontrada ${error}` }
+        }
+    }
 }
