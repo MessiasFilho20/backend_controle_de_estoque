@@ -1,6 +1,6 @@
-import { IsEmail, IsString } from "class-validator"
+import { IsEmail, IsString, IsStrongPassword } from "class-validator"
 
-export class userDto{
+export class userDto {
     @IsString()
     nome: string
 
@@ -10,9 +10,23 @@ export class userDto{
     @IsEmail()
     gmail: string 
     
-    @IsString()
+   
+    @IsStrongPassword({
+        minLength: 3, 
+        minUppercase: 0 , 
+        minSymbols: 0, 
+        minLowercase:0,
+        minNumbers:0
+    })
     password: string 
 
-    @IsString()
+   
+    @IsStrongPassword({
+        minLength: 3, 
+        minUppercase: 0, 
+        minSymbols: 0, 
+        minLowercase:0,
+        minNumbers: 0    
+    })
     passwordconfirm: string
 }

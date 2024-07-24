@@ -9,7 +9,6 @@ import { paramNumber } from "src/Decoretor/parm_number";
 export class userController {
     constructor (private readonly userService:userService){}
 
-
     @Post('login')
     async loginUser(@Body()user: loginDTO, @Res() res  ){
         const {message,status,token} = await this.userService.loginUser(user)
@@ -18,11 +17,13 @@ export class userController {
         }
     
     @Post('create')
-    async createUser(@Body()user: userDto, @Res() res  ){
+    async createUser(@Body() user: userDto , @Res() res  ){
+
         const {message,status,token} = await this.userService.createUser(user)
         if (!status){return res.status(HttpStatus.BAD_REQUEST).json(message)}
             return res.status(HttpStatus.OK).json(token)
         }
+    
     @UseGuards(authGuard)
     @Get('getuser')
     async getuser(@Request() req,){
@@ -41,7 +42,6 @@ export class userController {
     @Get('all')
     async getAllUsers(){
         const {datas} = await this.userService.getAllUsers()
-        
         return {datas}
     }
 
