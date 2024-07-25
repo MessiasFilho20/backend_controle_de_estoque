@@ -24,7 +24,7 @@ export class orederService {
         private readonly category: categoryService
     ) { }
 
-    async createOreder(user: userDto, order: orderDto): Promise<orderInterface> {
+    async createOreder(user , order: orderDto): Promise<orderInterface> {
         try {
 
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
@@ -51,7 +51,7 @@ export class orederService {
                     userName: user.nome,
                     quantidade: rest,
                     userCpf: user.cpf,
-                    role: 'user'
+                    role: user.role
                 }
             })
 
@@ -114,7 +114,9 @@ export class orederService {
 
     async getAllOrders(): Promise<orderInterface> {
         try {
-            const orders = await this.prisma.oreder.findMany()
+            const orders = await this.prisma.oreder.findMany({
+                orderBy: {created_at: 'desc'}
+            })
             return { status: true, data: null, datas: orders, messege: "ordems encontradas" }
         } catch (error) {
             return { status: false, data: null, datas: null, messege: `error ordem não encontrada ${error}` }

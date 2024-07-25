@@ -49,7 +49,7 @@ export class userService {
                     gmail: user.gmail, 
                     nome: user.nome, 
                     password: user.password, 
-                    role: ''
+                    role: 'users'
                 }
              })
 
