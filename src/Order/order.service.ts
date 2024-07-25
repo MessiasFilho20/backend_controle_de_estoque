@@ -61,7 +61,7 @@ export class orederService {
         }
     }
 
-    async createOrderByAdmin(user, order: orderAdminDTO): Promise<orderInterface> {
+    async createOrderByAdmin(user,  order: orderAdminDTO): Promise<orderInterface> {
         try {
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
