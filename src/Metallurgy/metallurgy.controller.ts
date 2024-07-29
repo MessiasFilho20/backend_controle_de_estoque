@@ -2,17 +2,19 @@ import { Body, Controller, Get, HttpStatus, Post, Put, Res } from "@nestjs/commo
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
 import { metallurgyService } from "./metallurgy.service";
 import { paramNumber } from "src/Decoretor/parm_number";
+import { response } from "express";
 
 @Controller('metallurgy')
 export class metallurgyController{
     constructor(private readonly metallurgyService: metallurgyService){}
 
     @Post('create/:id')
-    async createMetallurgy(@Body() item: metallurgDto, @Res() res, @paramNumber() id ){
-     
+    async createMetallurgy(@Body() item: metallurgDto, @paramNumber() id ){
+        console.log(item);
+        
         const metall = await  this.metallurgyService.createItemStoque(id ,item)
-        if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
-        return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
+        if (!metall.status) return response.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
+        return response.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
     }
 
     @Put('update/:id')

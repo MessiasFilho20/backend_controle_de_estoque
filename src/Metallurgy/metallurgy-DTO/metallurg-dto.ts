@@ -2,10 +2,10 @@ import {IsNumber, IsString} from "class-validator"
 
 
 export class metallurgDto{
-    @IsString()
+    @IsNumber()
     quantidade: number
 
-    @IsString()
+    @IsNumber()
     quanti_emerg: number
 
 
@@ -15,9 +15,8 @@ export class metallurgDto{
     @IsString()
     fornecedor: string
 
-    @IsNumber() 
+    @IsString() 
     descricao: string
-
     
 }
  
