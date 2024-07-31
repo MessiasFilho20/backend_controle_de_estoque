@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
 import { orederService } from "./order.service";
 import { authGuard } from "src/guards/auth.guard";
 import { orderDto } from "./oreder-DTO/order-dto";
@@ -15,16 +15,19 @@ export class orederController {
 
     @Roles(role.admin, role.user)
     @Post('create')
-    async createOreder(@Body() order: orderDto, @Request() req){     
-        const orderall = await this.orderservice.createOreder(req.user, order)
-        return orderall
+    async createOreder(@Body() order: orderDto, @Request() req, @Res() res ){     
+        const {data,status,messege} = await this.orderservice.createOreder(req.user, order)
+        if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message:messege})}
+        return res.status(HttpStatus.OK).json({data:data})
     }
 
     @Roles(role.admin)
     @Post('create-admin')
-    async createOrederAdmin(@Body() order: orderAdminDTO , @Request() req){     
-        const orderall = await this.orderservice.createOrderByAdmin(req.user, order)
-        return orderall
+    async createOrederAdmin(@Body() order: orderAdminDTO , @Request() req, @Res() res){     
+        const {data,messege,status} = await this.orderservice.createOrderByAdmin(req.user, order)
+        if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message:messege})}
+        return res.status(HttpStatus.OK).json({data:data})
+
     }
 
     @Roles(role.admin)

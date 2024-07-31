@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpStatus, Post, Request, Res, Response, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Request, Res, Response, UseGuards } from "@nestjs/common";
 import { userService } from "./user.service";
 import { userDto } from "./userDTO/user-DTO";
 import { loginDTO } from "./userDTO/auth-login-DTO";
 import { authGuard } from "src/guards/auth.guard";
 import { paramNumber } from "src/Decoretor/parm_number";
+import { response } from "express";
 
 @Controller('user')
 export class userController {
@@ -12,15 +13,17 @@ export class userController {
     @Post('login')
     async loginUser(@Body()user: loginDTO, @Res() res  ){
         const {message,status,token} = await this.userService.loginUser(user)
-        if (!status){return res.status(HttpStatus.BAD_REQUEST).json(message)}
-            return res.status(HttpStatus.OK).json(token)
+        
+        if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
+
+        return res.status(HttpStatus.OK).json(token)
         }
     
     @Post('create')
     async createUser(@Body() user: userDto , @Res() res  ){
 
         const {message,status,token} = await this.userService.createUser(user)
-        if (!status){return res.status(HttpStatus.BAD_REQUEST).json(message)}
+        if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
             return res.status(HttpStatus.OK).json(token)
         }
     
@@ -44,5 +47,12 @@ export class userController {
         const {datas} = await this.userService.getAllUsers()
         return {datas}
     }
+
+    @Delete('delete/:id')
+    async deleteUserId(@paramNumber() id: number){
+        const {data, status, message} = await this.userService.DeleteUserById(id)
+        if (!status) return response.status(HttpStatus.BAD_REQUEST).json({message:message})
+        return {data}         
+        }   
 
     }

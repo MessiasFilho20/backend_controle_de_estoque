@@ -20,8 +20,14 @@ export class metallurgyService{
     constructor(private readonly prismaservice: prismaService){}
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
-        try {
+        console.log(items.descricao);
         
+        if (items.descricao == '' || items.fornecedor == '' || items.quantidade < 0 || items.quantidade < 0){
+            return {status: false, datas: null, data: null,  message: 'error ao preencher campos dos items'}
+        }
+
+
+        try {
             const item = await this.prismaservice.metalurgy.create({
                 data:{
                     quanti_emerg: Number(items.quanti_emerg), 

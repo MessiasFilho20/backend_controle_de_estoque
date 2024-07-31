@@ -31,11 +31,15 @@ export class orederService {
             const category = await this.category.ShowCategory(order.categoryID)
 
             const { quantidade } = metallugy.data
+            if (quantidade == 0){
+                return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
+            }
+
 
             let rest = quantidade - order.unidade
 
-            if (rest < 0 ) return {status: false, data: null , datas: null, messege: 'error resultado menor que zero'}
-
+            if (rest < 0 ) return {status: false, data: null , datas: null, messege: 'A quantidade que está retirando é maior que a quantidade em estoque'}
+            
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
                 data: { quantidade: rest }
@@ -67,6 +71,10 @@ export class orederService {
             const category = await this.category.ShowCategory(order.categoryID)
 
             const { quantidade } = metallugy.data
+            if (quantidade == 0){
+                return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
+            }
+
 
             let rest = quantidade - order.unidade
 
@@ -75,7 +83,7 @@ export class orederService {
                 data: { quantidade: rest }
             })
 
-            const ordercreated = await this.prisma.oreder.create({
+            await this.prisma.oreder.create({
                 data: {
                     category_description: category.data.description,
                     category_name: category.data.name,

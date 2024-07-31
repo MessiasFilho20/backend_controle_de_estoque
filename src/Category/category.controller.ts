@@ -18,7 +18,7 @@ export class categoryController{
     async createCategory(@Body() category: categoryDto, @Response() res, ){
         const cat = await this.categoryService.createCategory(category)
     
-        if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({error: cat.message})}
+        if (!cat.status) {return res.status(HttpStatus.BAD_REQUEST).json({message: cat.message})}
             
         return res.status(HttpStatus.OK).json({message: cat.message, data: cat.data})    
     }

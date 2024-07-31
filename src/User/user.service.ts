@@ -62,9 +62,11 @@ export class userService {
 
     async loginUser(user: loginDTO):Promise<usertoken>{
         try{
+
             const isEmail = user.data.includes('@')
             let userLogin 
-        
+            console.log(user.data, user.password);
+            
             if (isEmail){
                 userLogin = await this.prismaservice.user.findFirst({
                     where: {gmail: user.data}
@@ -115,5 +117,19 @@ export class userService {
             return {status: false , data : null , datas: null,message: `error ${error}`}
         }
     }
+
+    async DeleteUserById(id: number):Promise <userInterface>{
+        try {
+            const user = await this.prismaservice.user.delete({
+                where: {id}
+            })
+            if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
+
+            return {status: true, data: user, datas:null, message: 'usuario deletado'}
+        } catch (error) {
+            return {status: false , data : null , datas: null,message: `error ${error}`}
+        }
+    }
+
     
 }
