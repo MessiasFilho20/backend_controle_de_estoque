@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { authModule } from './Auth/auth.module';
 
 import { orderModule } from './Order/oreder.module';
+import { emailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { orderModule } from './Order/oreder.module';
       forwardRef(()=>prismaModule),
       userModule,
       authModule, 
-      orderModule
+      orderModule, 
+      emailModule
     ],
   controllers: [AppController],
   providers: [AppService],

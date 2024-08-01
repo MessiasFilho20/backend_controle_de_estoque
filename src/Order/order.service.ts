@@ -4,8 +4,9 @@ import { metallurgyService } from "src/Metallurgy/metallurgy.service";
 import { prismaService } from "src/prisma/prisma.service";
 
 import { orderDto } from "./oreder-DTO/order-dto";
-import { userDto } from "src/User/userDTO/user-DTO";
+
 import { orderAdminDTO } from "./oreder-DTO/orderadmin-dto";
+import { emailService } from "src/email/email.service";
 
 export interface orderInterface {
     status: boolean,
@@ -21,7 +22,8 @@ export class orederService {
         @Inject(forwardRef(() => prismaService))
         private readonly prisma: prismaService,
         private readonly metallurgy: metallurgyService,
-        private readonly category: categoryService
+        private readonly category: categoryService,
+        private readonly emailservice: emailService 
     ) { }
 
     async createOreder(user , order: orderDto): Promise<orderInterface> {
@@ -30,7 +32,7 @@ export class orederService {
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
 
-            const { quantidade } = metallugy.data
+            const { quantidade, quanti_emerg, descricao } = metallugy.data
             if (quantidade == 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
@@ -58,6 +60,10 @@ export class orederService {
                     role: user.role
                 }
             })
+
+            if (rest <= quanti_emerg){
+                await this.emailservice.sendLowStockAlert(descricao, rest)
+            }
 
             return { status: true, data: null, datas: null, messege: 'retirada feira com sucesso' }
         } catch (error) {
@@ -103,7 +109,6 @@ export class orederService {
             return { status: false, data: null, datas: null, messege: `error ao fazer retirada ${error}` }
         }
     }
-
 
     async updadateOrder() {
 

@@ -6,12 +6,14 @@ import { userModule } from "src/User/user.module";
 import { authModule } from "src/Auth/auth.module";
 import { metallurgyModule } from "src/Metallurgy/metallugy.module";
 import { categoryModule } from "src/Category/category.module";
+import { emailModule } from "src/email/email.module";
 
 
 @Module({
     controllers: [orederController], 
      exports: [orederService],
      imports:[
+         emailModule,
          prismaModule,
          userModule,
          authModule,
