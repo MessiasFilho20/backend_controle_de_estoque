@@ -16,7 +16,7 @@ export class metallurgyController{
     }
 
     @Put('update/:id')
-    async uploadMetallurgy(@Body() item: metallurgDto, @paramNumber() id, @Res() res ){
+    async uploadMetallurgy(@Body() item: any, @paramNumber() id, @Res() res ){
         
         const metall = await  this.metallurgyService.updateStoque(id, item)
         if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})

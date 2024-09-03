@@ -46,38 +46,37 @@ export class metallurgyService{
         }
     }
 
-    async updateStoque( id: number, items: metallurgDto ): Promise <metallurgInterface> {
-    try {
-        const category = await this.prismaservice.category.findFirst({
-            where: {id: id}
-        })
-        if (!category){
-            return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
-        }
-        const ite = await this.prismaservice.metalurgy.findFirst({
-            where:{id}
-        })
-        if (!ite){
-            return {status: false, datas: null, data: null, message: 'item Não encontrado'}
-        }
-
-      
-            const item = await this.prismaservice.metalurgy.update({
-                where: {id: id},
-                data:{
-                    quanti_emerg: items.quanti_emerg, 
-                    quantidade: items.quantidade, 
-                    descricao: items.descricao, 
-                    fornecedor: items.fornecedor, 
-                    img: items.img, 
-                    categoryID: id
-                }
-    
+    async updateStoque( id: number, items:any ): Promise <metallurgInterface> {
+        try {
+            const category = await this.prismaservice.category.findFirst({
+                where: {id: id}
             })
-            return {status: true, datas: null, data: item, message: 'Item Atualizado no estoque'}
-        } catch (error) {
-            return {status: false, datas: null, data: null, message: `error ao Atualizar Item ao estoque ${error}`}
-        }
+            if (!category){
+                return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
+            }
+            const ite = await this.prismaservice.metalurgy.findFirst({
+                where:{id: items.id}
+            })
+            if (!ite){
+                return {status: false, datas: null, data: null, message: 'item Não encontrado'}
+            }
+
+                const item = await this.prismaservice.metalurgy.update({
+                    where: {id: id},
+                    data:{
+                        quanti_emerg: items.quanti_emerg, 
+                        quantidade: items.quantidade, 
+                        descricao: items.descricao, 
+                        fornecedor: items.fornecedor, 
+                        img: items.img, 
+                        categoryID: id
+                    }
+        
+                })
+                return {status: true, datas: null, data: item, message: 'Item Atualizado no estoque'}
+            } catch (error) {
+                return {status: false, datas: null, data: null, message: `error ao Atualizar Item ao estoque ${error}`}
+            }
     }
 
     async getAllStoque():Promise <showmetallurgy>{
