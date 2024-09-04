@@ -1,8 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
 import { metallurgyService } from "./metallurgy.service";
 import { paramNumber } from "src/Decoretor/parm_number";
 import { response } from "express";
+import { authGuard } from "src/guards/auth.guard";
+import { rouleGuard } from "src/guards/roule.guard";
+import { Roles } from "src/Decoretor/role.decorator";
+import { role } from "src/enums/role.enum";
 
 @Controller('metallurgy')
 export class metallurgyController{
@@ -14,7 +18,8 @@ export class metallurgyController{
         if (!status) {return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
         return response.status(HttpStatus.OK).json({messege: message, data: data})
     }
-
+    @UseGuards(authGuard, rouleGuard)
+    @Roles(role.admin)
     @Put('update/:id')
     async uploadMetallurgy(@Body() item: any, @paramNumber() id, @Res() res ){
         
@@ -41,9 +46,9 @@ export class metallurgyController{
 
     @Get('show/:id')
     async getMetallury(@paramNumber() id, @Res() res){
-        const metall = await this.metallurgyService.getOneStoque(id)
-        if (!metall.status) return res.status(HttpStatus.BAD_REQUEST).json({error: metall.message})
-        return res.status(HttpStatus.OK).json({messege: metall.message, data: metall.data})
+        const {data,status,message} = await this.metallurgyService.getOneStoque(id)
+        if (!status) return res.status(HttpStatus.BAD_REQUEST).json({error: message})
+        return res.status(HttpStatus.OK).json(data)
     }
     
 }

@@ -16,8 +16,10 @@ export interface metallurgInterface extends showmetallurgy{
 
 @Injectable()
 export class metallurgyService{
-    
-    constructor(private readonly prismaservice: prismaService){}
+    constructor(
+       
+        private readonly prismaservice: prismaService
+    ){}
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
         console.log(items.descricao);
@@ -60,12 +62,13 @@ export class metallurgyService{
             if (!ite){
                 return {status: false, datas: null, data: null, message: 'item Não encontrado'}
             }
-
+            
+            
                 const item = await this.prismaservice.metalurgy.update({
-                    where: {id: id},
+                    where: {id: items.id},
                     data:{
-                        quanti_emerg: items.quanti_emerg, 
-                        quantidade: items.quantidade, 
+                        quanti_emerg: Number(items.quanti_emerg), 
+                        quantidade: Number(items.quantidade), 
                         descricao: items.descricao, 
                         fornecedor: items.fornecedor, 
                         img: items.img, 
