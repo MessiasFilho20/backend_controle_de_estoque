@@ -77,10 +77,18 @@ export class orederService {
             const category = await this.category.ShowCategory(order.categoryID)
 
             const { quantidade } = metallugy.data
+
+            const {unidade} = order
+            
+            let total = quantidade - unidade
+
+           if (total < 0) {
+                return {status: false, data: null , datas: null, messege: 'quantidade em estoque e menor que a quantidade retirada'}
+           } 
+
             if (quantidade == 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
-
 
             let rest = quantidade - order.unidade
 
@@ -97,9 +105,9 @@ export class orederService {
                     item_fornecedor: metallugy.data.fornecedor,
                     itemID: order.itemID,
                     unidade: order.unidade,
-                    userName: order.userName,
+                    userName: user.nome,
                     quantidade: rest,
-                    userCpf: order.userCPF,
+                    userCpf: user.cpf,
                     role: user.role
                 }
             })

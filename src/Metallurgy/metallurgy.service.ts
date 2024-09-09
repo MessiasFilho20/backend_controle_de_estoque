@@ -22,7 +22,8 @@ export class metallurgyService{
     ){}
     
     async createItemStoque( id :number, items: metallurgDto ): Promise <metallurgInterface> {
-        console.log(items.descricao);
+        
+        
         
         if (items.descricao == '' || items.fornecedor == '' || items.quantidade < 0 || items.quantidade < 0){
             return {status: false, datas: null, data: null,  message: 'error ao preencher campos dos items'}
@@ -50,29 +51,32 @@ export class metallurgyService{
 
     async updateStoque( id: number, items:any ): Promise <metallurgInterface> {
         try {
+          
             const category = await this.prismaservice.category.findFirst({
                 where: {id: id}
             })
+           
             if (!category){
                 return {status: false, datas: null, data: null, message: 'categoria Não encontrada'}
             }
+
             const ite = await this.prismaservice.metalurgy.findFirst({
-                where:{id: items.id}
+                where:{ id: items.id}
             })
+           
             if (!ite){
                 return {status: false, datas: null, data: null, message: 'item Não encontrado'}
             }
-            
-            
+          
                 const item = await this.prismaservice.metalurgy.update({
-                    where: {id: items.id},
+                    where: {id: ite.id},
                     data:{
                         quanti_emerg: Number(items.quanti_emerg), 
                         quantidade: Number(items.quantidade), 
-                        descricao: items.descricao, 
-                        fornecedor: items.fornecedor, 
+                        descricao: String(items.descricao), 
+                        fornecedor: String(items.fornecedor), 
                         img: items.img, 
-                        categoryID: id
+                        categoryID: Number(id)
                     }
         
                 })
