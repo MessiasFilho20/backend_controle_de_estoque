@@ -8,7 +8,6 @@ import { metallurgyModule } from "src/Metallurgy/metallugy.module";
 import { categoryModule } from "src/Category/category.module";
 import { emailModule } from "src/email/email.module";
 
-
 @Module({
     controllers: [orederController], 
      exports: [orederService],

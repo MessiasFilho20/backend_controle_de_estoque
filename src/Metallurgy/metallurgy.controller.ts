@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
 import { metallurgyService } from "./metallurgy.service";
 import { paramNumber } from "src/Decoretor/parm_number";
@@ -59,5 +59,14 @@ export class metallurgyController{
         if (!status) return res.status(HttpStatus.BAD_REQUEST).json({error: message})
         return res.status(HttpStatus.OK).json(data)
     }
-    
+
+    @UseGuards(authGuard, rouleGuard)
+    @Roles(role.admin)
+    @Delete('delete/:id')
+    async deleteItemMetallurgy(@paramNumber() id , @Res() res ){
+       const {data,status,message} = await this.metallurgyService.deleteItemMellury(id)
+       if (!status) return res.status(HttpStatus.BAD_REQUEST).json({error: message})
+        return res.status(HttpStatus.OK).json(data)
+        
+    }    
 }

@@ -138,4 +138,14 @@ export class metallurgyService{
         }
     }
 
+    async deleteItemMellury(id: number):Promise<metallurgInterface>{
+        try {
+            const item = await this.prismaservice.metalurgy.delete({where: {id}})
+
+            return {data: item, datas: null , message: 'item deletado com sucesso', status: true}
+        } catch (error) {
+            return {data: null, datas: null,message:'error ao deletar Iten', status: false }
+        }
+    }
+
 }
