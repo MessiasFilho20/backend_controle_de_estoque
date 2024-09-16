@@ -1,15 +1,15 @@
 import { IsEmail, IsSemVer, IsString, IsStrongPassword } from "class-validator";
 
 export class loginDTO {
-    @IsEmail() 
+    @IsString() 
     data: string 
 
     @IsStrongPassword({
-        minLength: 3, 
-        minUppercase: 0 , 
-        minSymbols: 0, 
+        minLength: 8, 
+        minUppercase: 1 , 
+        minSymbols: 1, 
         minLowercase:0,
-        minNumbers:0
+        minNumbers:1
     })
     password: string
 

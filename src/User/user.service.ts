@@ -4,6 +4,7 @@ import { userDto } from "./userDTO/user-DTO";
 import { loginDTO } from "./userDTO/auth-login-DTO";
 import { authService } from "src/Auth/auth.service";
 import * as bcrypt from 'bcrypt';
+import { userUpdate } from "./userDTO/update-DTO";
 
 export interface userInterface {
     data: {} | null, 
@@ -65,13 +66,15 @@ export class userService {
 
             const isEmail = user.data.includes('@')
             let userLogin 
-            console.log(user.data, user.password);
+        
             
             if (isEmail){
+               
                 userLogin = await this.prismaservice.user.findFirst({
                     where: {gmail: user.data}
                 })
             }else{
+                
                 userLogin = await this.prismaservice.user.findFirst({
                     where: {cpf: user.data}
                 })
@@ -100,7 +103,7 @@ export class userService {
                 where: {id}
             })
             if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
-
+            
             return {status: true, data: user, datas:null, message: ''}
         } catch (error) {
             return {status: false , data : null , datas: null,message: `error ${error}`}
@@ -112,9 +115,37 @@ export class userService {
             const users = await this.prismaservice.user.findMany()
             // if (!user) return {status: false, data: null,datas: null,message: 'usuario não encontrado'}
 
+
+            
             return {status: true, data: null, datas:users, message: ''}
         } catch (error) {
             return {status: false , data : null , datas: null,message: `error ${error}`}
+        }
+    }
+
+    async updateUser(user: userUpdate, id: number  ): Promise <userInterface>{
+        try{
+            const userid = await this.prismaservice.user.findFirst(
+                {where: {id}}
+            )
+            if (!userid){
+                return {data: null, datas: null, status: false, message: 'user não encontrado'}
+            }
+
+            const updated = await this.prismaservice.user.update({
+                where: {id}, 
+                data:{
+                    gmail: user.gmail,
+                    cpf: user.cpf,
+                    nome: user.nome, 
+                    role: user.role
+                }
+            })
+            return {data: updated, datas: null, status: true, message: 'Usuario atualizado com sucesso '}
+
+        }catch(error ){
+            return {data: null, datas: null, status: false, message: `erro prisma data bese ${error}`}
+
         }
     }
 
