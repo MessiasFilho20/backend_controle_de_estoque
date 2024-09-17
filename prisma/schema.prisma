@@ -50,6 +50,7 @@ model Metalurgy {
   categoryID  Int
   quantidade      Int   
   quanti_emerg    Int
+  tamanho         Float
   img             String   @db.VarChar(191)
   fornecedor      String   @db.VarChar(191)
   descricao       String   

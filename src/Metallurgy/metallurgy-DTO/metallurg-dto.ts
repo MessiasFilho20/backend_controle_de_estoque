@@ -9,6 +9,9 @@ export class metallurgDto{
     @IsNumber()
     quanti_emerg: number
 
+    @IsNumber()
+    tamanho: number
+
     @IsString()
     img: string
 

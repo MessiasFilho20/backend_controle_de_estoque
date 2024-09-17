@@ -37,6 +37,7 @@ export class metallurgyService{
                     quantidade: Number(items.quantidade), 
                     descricao: items.descricao, 
                     fornecedor: items.fornecedor, 
+                    tamanho: items.tamanho,
                     img: items.img, 
                     categoryID: id
                 }
@@ -76,7 +77,8 @@ export class metallurgyService{
                         descricao: String(items.descricao), 
                         fornecedor: String(items.fornecedor), 
                         img: items.img, 
-                        categoryID: Number(id)
+                        categoryID: Number(id), 
+                        tamanho: Number(items.tamanho)
                     }
         
                 })

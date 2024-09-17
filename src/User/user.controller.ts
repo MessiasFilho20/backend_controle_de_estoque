@@ -16,7 +16,8 @@ export class userController {
 
     @Post('login')
     async loginUser(@Body()user: loginDTO, @Res() res  ){
-      
+            console.log(user);
+            
         const {message,status,token} = await this.userService.loginUser(user)
         if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
         return res.status(HttpStatus.OK).json(token)
