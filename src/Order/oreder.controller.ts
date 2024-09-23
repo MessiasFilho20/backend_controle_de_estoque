@@ -15,10 +15,12 @@ export class orederController {
 
     @Roles(role.admin, role.user)
     @Post('create')
-    async createOreder(@Body() order: orderDto, @Request() req, @Res() res ){     
+    async createOreder(@Body() order: orderDto, @Request() req, @Res() res ){ 
+
         const {data,status,messege} = await this.orderservice.createOreder(req.user, order)
         if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message:messege})}
         return res.status(HttpStatus.OK).json({data:data})
+        
     }
 
     @Roles(role.admin)

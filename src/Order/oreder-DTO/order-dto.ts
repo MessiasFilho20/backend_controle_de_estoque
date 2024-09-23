@@ -9,4 +9,7 @@ export class orderDto {
 
     @IsNumber()
     unidade: number
+
+    @IsNumber()
+    tamanho: number
 }

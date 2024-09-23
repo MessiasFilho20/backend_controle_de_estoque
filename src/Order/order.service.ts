@@ -28,46 +28,79 @@ export class orederService {
 
     async createOreder(user , order: orderDto): Promise<orderInterface> {
         try {
-
+            
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
 
-            const { quantidade, quanti_emerg, descricao } = metallugy.data
-            if (quantidade == 0){
+            const { quantidade, descricao, tamanho } = metallugy.data
+            
+            if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
-
-
-            let rest = quantidade - order.unidade
-
-            if (rest < 0 ) return {status: false, data: null , datas: null, messege: 'A quantidade que está retirando é maior que a quantidade em estoque'}
+            
+            const  {novaQuantidade , novoTotal}= this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
+            
+            
+            if (novaQuantidade < 0 ) return {status: false, data: null , datas: null, messege: 'A quantidade que está retirando é maior que a quantidade em estoque'}
+            
             
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
-                data: { quantidade: rest }
+                data: { quantidade: novaQuantidade }
             })
+
+
             await this.prisma.oreder.create({
                 data: {
                     category_description: category.data.description,
                     category_name: category.data.name,
-                    item_descricao: metallugy.data.descricao,
+                    item_descricao: descricao,
                     item_fornecedor: metallugy.data.fornecedor,
                     itemID: order.itemID,
                     unidade: order.unidade,
                     userName: user.nome,
-                    quantidade: rest,
+                    quantidade: novaQuantidade,
                     userCpf: user.cpf,
-                    role: user.role
+                    role: user.role, 
+
+                    tamanho: order.tamanho, 
+                    tamanho_total: novoTotal
                 }
             })
 
-            if (rest <= quanti_emerg){
-                await this.emailservice.sendLowStockAlert(descricao, rest)
-            }
-
+           
             return { status: true, data: null, datas: null, messege: 'retirada feira com sucesso' }
         } catch (error) {
             return { status: false, data: null, datas: null, messege: `error ao fazer retirada ${error}` }
+        }
+    }
+
+    calcRestante(quantidade : number, tamanho: number, QR: number, TR:number ) {
+
+        let novaQuantidade= quantidade 
+        let novoTamanho = tamanho
+        let total = quantidade * tamanho 
+        
+        if (QR > 0 ){
+            novaQuantidade = quantidade - QR
+            total = novaQuantidade * tamanho
+            
+        }
+        if (TR > 0 ){
+           const removeUnid = Math.floor(TR /tamanho)
+           novaQuantidade -= removeUnid 
+           
+           total = novaQuantidade * tamanho
+          
+           const tamrest = TR %tamanho 
+           total -= tamrest
+        }
+        
+
+        return {
+            novaQuantidade: Math.max(0 , Math.round(novaQuantidade)), 
+            novoTotal: Math.max(0, total), 
+    
         }
     }
 
@@ -76,25 +109,25 @@ export class orederService {
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
 
-            const { quantidade } = metallugy.data
+            const { quantidade, descricao, tamanho } = metallugy.data
 
-            const {unidade} = order
-            
-            let total = quantidade - unidade
-
-           if (total < 0) {
-                return {status: false, data: null , datas: null, messege: 'quantidade em estoque e menor que a quantidade retirada'}
-           } 
-
-            if (quantidade == 0){
+           
+            if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
 
-            let rest = quantidade - order.unidade
+            const  {novaQuantidade , novoTotal}= this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
+           
+           
+            if (novaQuantidade <= 0){
+                return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
+            }
+
+           
 
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
-                data: { quantidade: rest }
+                data: { quantidade: novaQuantidade }
             })
 
             await this.prisma.oreder.create({
@@ -106,7 +139,9 @@ export class orederService {
                     itemID: order.itemID,
                     unidade: order.unidade,
                     userName: user.nome,
-                    quantidade: rest,
+                    quantidade: novaQuantidade,
+                    tamanho: tamanho, 
+                    tamanho_total: novoTotal, 
                     userCpf: user.cpf,
                     role: user.role
                 }

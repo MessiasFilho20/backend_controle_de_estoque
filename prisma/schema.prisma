@@ -27,6 +27,8 @@ model Oreder {
   userName String 
   userCpf String
   itemID Int
+  tamanho_total Float
+  tamanho Float
   item_descricao String
   item_fornecedor String
   category_description String
