@@ -63,21 +63,19 @@ export class userService {
 
     async loginUser(user: loginDTO):Promise<usertoken>{
         try{
-
             const isEmail = user.data.includes('@')
             let userLogin 
         
-            
             if (isEmail){
-               
                 userLogin = await this.prismaservice.user.findFirst({
                     where: {gmail: user.data}
                 })
-            }else{
-                
+            } else{
+            
                 userLogin = await this.prismaservice.user.findFirst({
                     where: {cpf: user.data}
                 })
+                
             }
 
             if (!userLogin) {

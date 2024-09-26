@@ -62,7 +62,6 @@ export class orederService {
                     quantidade: novaQuantidade,
                     userCpf: user.cpf,
                     role: user.role, 
-
                     tamanho: order.tamanho, 
                     tamanho_total: novoTotal
                 }
@@ -123,7 +122,6 @@ export class orederService {
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
 
-           
 
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
