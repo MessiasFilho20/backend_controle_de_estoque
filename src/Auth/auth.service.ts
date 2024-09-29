@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { User } from "@prisma/client";
+import { user } from "@prisma/client";
 
 @Injectable()
 export class authService {
     constructor(private readonly jwtservice:JwtService){}
     
-    createToken(user: User){
+    createToken(user: user){
         return {
              acessToken: this.jwtservice.sign({
                 id: user.id, 

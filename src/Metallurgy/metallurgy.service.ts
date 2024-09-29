@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { metallurgDto } from "./metallurgy-DTO/metallurg-dto";
+import { map } from "rxjs";
 
 
 export interface showmetallurgy{
@@ -130,7 +131,12 @@ export class metallurgyService{
             const item = await this.prismaservice.metalurgy.findMany({
                 where: {categoryID: id}
             })
-            return {status: true, datas: item, message: 'ok'}
+
+            const filter = item.map( ite => ({
+                ...ite, 
+                quantidade: Math.round(ite.quantidade)
+            }) )
+            return {status: true, datas: filter, message: 'ok'}
         } catch (error) {
             return {status: false, datas: null, message: `error ${error}`}
             

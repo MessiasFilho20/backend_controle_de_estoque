@@ -32,17 +32,23 @@ export class orederService {
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
 
-            const { quantidade, descricao, tamanho } = metallugy.data
+           
             
+            const { quantidade, descricao, tamanho } = metallugy.data
+
+           
+            
+
             if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
             
-            const  {novaQuantidade , novoTotal}= this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
+            const  {novaQuantidade , novoTotal}= await this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
             
             
             if (novaQuantidade < 0 ) return {status: false, data: null , datas: null, messege: 'A quantidade que está retirando é maior que a quantidade em estoque'}
             
+           
             
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
@@ -50,7 +56,7 @@ export class orederService {
             })
 
 
-            await this.prisma.oreder.create({
+            const ord = await this.prisma.oreder.create({
                 data: {
                     category_description: category.data.description,
                     category_name: category.data.name,
@@ -66,7 +72,8 @@ export class orederService {
                     tamanho_total: novoTotal
                 }
             })
-
+          
+            
            
             return { status: true, data: null, datas: null, messege: 'retirada feira com sucesso' }
         } catch (error) {
@@ -74,31 +81,29 @@ export class orederService {
         }
     }
 
-    calcRestante(quantidade : number, tamanho: number, QR: number, TR:number ) {
+    async calcRestante(quantidade : number, tamanho: number, QR: number, TR:number ) {
 
-        let novaQuantidade= quantidade 
-        let novoTamanho = tamanho
-        let total = quantidade * tamanho 
+        
+        let  total = quantidade * tamanho 
         
         if (QR > 0 ){
-            novaQuantidade = quantidade - QR
-            total = novaQuantidade * tamanho
+            quantidade -= QR
+            total = quantidade * tamanho
             
         }
         if (TR > 0 ){
-           const removeUnid = Math.floor(TR /tamanho)
-           novaQuantidade -= removeUnid 
-           
-           total = novaQuantidade * tamanho
+            const quantidadeRemovida = TR / tamanho;
+            quantidade -= quantidadeRemovida;
+            total = quantidade * tamanho;
+            
           
-           const tamrest = TR %tamanho 
-           total -= tamrest
+            
+
         }
         
-
         return {
-            novaQuantidade: Math.max(0 , Math.round(novaQuantidade)), 
-            novoTotal: Math.max(0, total), 
+            novaQuantidade: quantidade,
+            novoTotal: total
     
         }
     }
@@ -110,12 +115,13 @@ export class orederService {
 
             const { quantidade, descricao, tamanho } = metallugy.data
 
+          
            
             if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
 
-            const  {novaQuantidade , novoTotal}= this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
+            const  {novaQuantidade , novoTotal}= await this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
            
            
             if (novaQuantidade <= 0){
@@ -169,9 +175,18 @@ export class orederService {
     async getAllOrders(): Promise<orderInterface> {
         try {
             const orders = await this.prisma.oreder.findMany({
-                orderBy: {created_at: 'desc'}
+                orderBy: {created_at: 'desc'}, 
+
             })
-            return { status: true, data: null, datas: orders, messege: "ordems encontradas" }
+
+            const format = orders.map(order =>({
+                ...order, 
+                quantidade: Math.round(order.quantidade), 
+                tamanho_total: parseFloat(order.tamanho_total.toFixed(3))
+            }) )
+           
+
+            return { status: true, data: null, datas: format, messege: "ordems encontradas" }
         } catch (error) {
             return { status: false, data: null, datas: null, messege: `error ordem não encontrada ${error}` }
         }
