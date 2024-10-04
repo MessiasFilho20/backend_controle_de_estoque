@@ -32,12 +32,7 @@ export class orederService {
             const metallugy = await this.metallurgy.getOneStoque(order.itemID)
             const category = await this.category.ShowCategory(order.categoryID)
 
-           
-            
             const { quantidade, descricao, tamanho } = metallugy.data
-
-           
-            
 
             if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
@@ -45,10 +40,8 @@ export class orederService {
             
             const  {novaQuantidade , novoTotal}= await this.calcRestante(quantidade, tamanho, order.unidade, order.tamanho)
             
-            
             if (novaQuantidade < 0 ) return {status: false, data: null , datas: null, messege: 'A quantidade que está retirando é maior que a quantidade em estoque'}
             
-           
             
             await this.prisma.metalurgy.update({
                 where: { id: order.itemID },
@@ -56,7 +49,7 @@ export class orederService {
             })
 
 
-            const ord = await this.prisma.oreder.create({
+           await this.prisma.oreder.create({
                 data: {
                     category_description: category.data.description,
                     category_name: category.data.name,
@@ -96,8 +89,6 @@ export class orederService {
             quantidade -= quantidadeRemovida;
             total = quantidade * tamanho;
             
-          
-            
 
         }
         
@@ -115,8 +106,6 @@ export class orederService {
 
             const { quantidade, descricao, tamanho } = metallugy.data
 
-          
-           
             if (quantidade <= 0){
                 return {status: false, data: null , datas: null, messege: 'Não há Items no estoque para ser retirado'}
             }
@@ -138,16 +127,16 @@ export class orederService {
                 data: {
                     category_description: category.data.description,
                     category_name: category.data.name,
-                    item_descricao: metallugy.data.descricao,
+                    item_descricao: descricao,
                     item_fornecedor: metallugy.data.fornecedor,
                     itemID: order.itemID,
                     unidade: order.unidade,
                     userName: user.nome,
                     quantidade: novaQuantidade,
-                    tamanho: tamanho, 
-                    tamanho_total: novoTotal, 
                     userCpf: user.cpf,
-                    role: user.role
+                    role: user.role, 
+                    tamanho: order.tamanho, 
+                    tamanho_total: novoTotal
                 }
             })
 

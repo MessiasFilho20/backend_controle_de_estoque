@@ -15,7 +15,8 @@ export class metallurgyController{
     @Roles(role.admin)
     @Post('create/:id')
     async createMetallurgy(@Body() item: metallurgDto, @paramNumber() id, @Res() res ){
-
+      
+        
         const {status,message, data} = await  this.metallurgyService.createItemStoque(id ,item)
         if (!status) {return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
         return res.status(HttpStatus.OK).json({messege: message, data: data})
