@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Request, Res, Response, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Request, Res, Response, UseGuards } from "@nestjs/common";
 import { userService } from "./user.service";
 import { userDto } from "./userDTO/user-DTO";
 import { loginDTO } from "./userDTO/auth-login-DTO";
@@ -22,13 +22,15 @@ export class userController {
         return res.status(HttpStatus.OK).json(token)
         }
     
-    @Post('create')
-    async createUser(@Body() user: userDto , @Res() res  ){
 
-        const {message,status,token} = await this.userService.createUser(user)
+  
+    @Post('create')
+    async createUser(@Body() users:userDto, @Res() res   ){
+        
+        const {message,status} = await this.userService.createUser(users)
         if (!status){return res.status(HttpStatus.BAD_REQUEST).json({message: message})}
-            return res.status(HttpStatus.OK).json(token)
-        }
+            return res.status(HttpStatus.OK)
+    }
     
     
     @UseGuards(authGuard, rouleGuard)
@@ -42,7 +44,8 @@ export class userController {
         return res.status(HttpStatus.OK).json({data: data})
     }
     
-    @UseGuards(authGuard)
+    @UseGuards(authGuard, rouleGuard )
+    @Roles(role.admin, role.user)
     @Get('getuser')
     async getuser(@Request() req,){
         const {data} = await this.userService.getUserById(req.user.id)
