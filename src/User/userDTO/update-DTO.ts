@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from "class-validator"
+import { IsEmail, IsString, IsStrongPassword } from "class-validator"
 
 export class userUpdate {
 
@@ -13,5 +13,16 @@ export class userUpdate {
 
     @IsString()
     role: string
+
+    @IsStrongPassword(
+        {
+            minLength: 8, 
+            minUppercase: 1 , 
+            minSymbols: 1, 
+            minLowercase:0,
+            minNumbers:1
+        }
+    )
+    password: string
 
 }

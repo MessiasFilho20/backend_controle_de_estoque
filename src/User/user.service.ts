@@ -123,22 +123,30 @@ export class userService {
 
     async updateUser(user: userUpdate, id: number  ): Promise <userInterface>{
         try{
-            const userid = await this.prismaservice.user.findFirst(
-                {where: {id}}
-            )
-            if (!userid){
-                return {data: null, datas: null, status: false, message: 'user não encontrado'}
-            }
+           
+
+            const userid = await this.prismaservice.user.findFirst({where: {id}})
+            if (!userid){return {data: null, datas: null, status: false, message: 'user não encontrado'}}
+
+           
+            let updatedData: any = {
+                gmail: user.gmail,
+                cpf: user.cpf,
+                nome: user.nome,
+                role: user.role,
+              };
+
+              if (user.password && user.password.trim() !== '') {
+                const salt = await bcrypt.genSalt();
+                updatedData.password = await bcrypt.hash(user.password, salt);
+              }
 
             const updated = await this.prismaservice.user.update({
                 where: {id}, 
-                data:{
-                    gmail: user.gmail,
-                    cpf: user.cpf,
-                    nome: user.nome, 
-                    role: user.role
-                }
+                data: updatedData
             })
+
+            
             return {data: updated, datas: null, status: true, message: 'Usuario atualizado com sucesso '}
 
         }catch(error ){
